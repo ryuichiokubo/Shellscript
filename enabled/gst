@@ -1,0 +1,28 @@
+#!/bin/sh
+
+function help () {
+  echo "Usage: gi <command> <search>";
+  echo " - Find file names from git status including <search> and execute git command <command> with them";
+  echo " - Supported commands: git add, git unstage"; # XXX try rm and checkout --
+}
+
+command=$1
+search=$2
+
+if [ -n "$command" -a -n "$search" ]
+then
+    files=`git status -s | tr -s " " | cut -d " " -f 2`
+    for f in $files
+    do
+      if [ -f $f ]
+      then
+        match=`echo $f | grep -i $search`;
+        if [ -n "$match" ]
+        then
+          git $command $match;
+        fi
+      fi
+    done
+else
+    help
+fi
