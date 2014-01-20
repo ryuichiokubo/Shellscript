@@ -7,10 +7,20 @@ function help () {
   echo " - Supported commands: git add, git unstage"; # XXX try rm and checkout --
 }
 
-command=$1
-search=$2
+# TODO:
+# - select command intelligently based on staged / unstaged
+# - feedback to stdout wether "added", "not found" etc
 
-if [ -n "$command" -a -n "$search" ]
+if [ -z "$2" ]
+then
+  command="add";
+  search=$1;
+else
+  command=$1;
+  search=$2;
+fi
+
+if [ -n "$search" ]
 then
     files=`git status -s | sed 's/^ *//' | tr -s " " | cut -d " " -f 2`
     #echo $files
