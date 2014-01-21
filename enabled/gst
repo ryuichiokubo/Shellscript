@@ -38,6 +38,7 @@ then
         fi
       fi
     done
+    git status
 else
     help
 fi
