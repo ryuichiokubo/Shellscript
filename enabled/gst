@@ -4,7 +4,7 @@ function help () {
   echo "### Git Staging Tool ###"
   echo "Usage: gst <command> <search>";
   echo " - Find file names from git status including <search> and execute git command <command> with them";
-  echo " - Supported commands: git add, git unstage"; # XXX try rm and checkout --
+  echo " - Supported commands: git add, git unstage, git rm"; # XXX try checkout --
 }
 
 # TODO:
@@ -23,19 +23,16 @@ fi
 if [ -n "$search" ]
 then
     files=`git status -s | sed 's/^ *//' | tr -s " " | cut -d " " -f 2`
-    #echo $files
+    echo $files # debug
     for f in $files
     do
-      if [ -f $f ]
+      match=`echo $f | grep -i $search`;
+      if [ -n "$match" ]
       then
-        match=`echo $f | grep -i $search`;
-        if [ -n "$match" ]
-        then
-          #echo "File found: search=$search";
-          git $command $match;
-        #else
-        #  echo "File not found: search=$search";
-        fi
+        echo "File found: search=$search"; # debug
+        git $command $match;
+      else
+        echo "File not found: search=$search"; # debug
       fi
     done
     git status
