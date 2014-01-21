@@ -1,0 +1,12 @@
+#!/bin/sh
+
+function help () {
+  echo "### Remove ###"
+  echo "Usage: remove <files...>";
+  echo " - Move files or directories to Trash.";
+}
+
+# TODO:
+# - remember last moved object and move it back by 'remove back' command
+
+mv $@ ~/.Trash
