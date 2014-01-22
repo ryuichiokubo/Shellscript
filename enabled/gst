@@ -4,13 +4,12 @@ function help () {
   echo "### Git Staging Tool ###";
   echo "Usage: gst <command> <search>";
   echo " - Find file names from git status including <search> and execute git command <command> with them";
-  echo " - Supported commands: git add, git unstage, git rm"; # XXX try checkout --
+  echo " - Supported commands: git add, git unstage, git rm, git discard";
   echo "";
 }
 
 # TODO:
-# - select command intelligently based on staged / unstaged
-# - feedback to stdout wether "added", "not found" etc
+# - feedback to stdout wether "added", "not found", "discarded" etc
 
 if [ -z "$2" ]
 then
