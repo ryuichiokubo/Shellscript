@@ -1,0 +1,1 @@
+fswatch ~/scripts/enabled "rsync -a ~/scripts/enabled/ ~/bin"
