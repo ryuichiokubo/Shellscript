@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# ヘルプメッセージ
+function help () {
+  echo "### 論文引用検索 ###"
+  echo "Usage: $0 <論文contentファイル> <引用listファイル>"
+}
+
+
+### パラメータチェック
+if [ "$#" -ne 2 ] # パラメータ数が２じゃなかったら
+then
+  help
+  exit 1 # エラーステータスで終了
+else
+  content=$1
+  list=$2
+fi
+
+
+# 論文ファイルから名前を抽出し配列に格納する
+names=() # 配列
+for word in `cat "$content"` # 空白で区切られた単位でループ
+do
+  # 先頭が大文字の単語を抽出、アルファベット以外を削除
+  n=`echo $word | grep -E "^[A-Z]" | sed 's/[^a-zA-Z]//g'`
+  if [ -n "$n" ] # 何も残らなければスキップ
+  then
+    names+=($n) # 配列に追加
+  fi
+done
+
+# 名前の重複を除き空白区切りの文字列にする
+# XXX なぜ空白区切りになる？ならなければ環境に応じた改行コードで　tr '\n' ' '
+str=`for name in ${names[@]}
+do
+  echo "$name" # 配列の全要素が改行区切りで出力されるため、sortコマンドによるソートが可能になる
+done | sort -u`
+
+
+# 文字列ををgrepで使えるように空白をorにする
+search=`echo $str | sed -E 's/ /|/g'`
+
+# 単語として引っかかった箇所を色付けして、行を出力する
+grep -wE $search --color $list
