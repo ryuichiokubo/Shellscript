@@ -1,42 +1,51 @@
 #!/bin/sh
 
 function help () {
-  echo "### Git Staging Tool ###";
-  echo "Usage: gst <command> <search>";
-  echo " - Find file names from git status including <search> and execute git command <command> with them";
-  echo " - Supported commands: git add, git unstage, git rm, git discard";
-  echo "";
+  echo "### Git Staging Tool ###"
+  echo "Usage: gst [command] [search ...]";
+  echo " - Find file names from git status including <search> and execute git command <command> with them"
+  echo " - Supported commands: git add, git unstage, git rm, git discard"
+  echo ""
 }
 
 # TODO:
+# - accept first three letters like uns: unstage
+# - automatically choose command based on context
 # - feedback to stdout wether "added", "not found", "discarded" etc
 
-if [ -z "$2" ]
+# Parameter check
+if [ "$#" -lt 2 ]
 then
-  command="add";
-  search=$1;
-else
-  command=$1;
-  search=$2;
+  help
+  git status
+  exit 1
 fi
 
-if [ -n "$search" ]
-then
-    files=`git status -s | sed 's/^ *//' | tr -s " " | cut -d " " -f 2`
-    #echo $files # debug
-    for f in $files
-    do
-      match=`echo $f | grep -i $search`;
-      if [ -n "$match" ]
-      then
-        #echo "File found: search=$search"; # debug
-        git $command $match;
-      #else
-        #echo "File not found: search=$search"; # debug
-      fi
-    done
-else
-    help
-fi
+command=$1
+
+# $search is in the form of param2|param3 ...
+shift 1
+search=$@
+search=`echo $search | tr ' ' '|'`
+#echo "search: $search" # debug
+
+# Get files in git status in space separated format
+files=`git status -s | sed 's/^ *//' | tr -s " " | cut -d " " -f 2`
+#echo $files # debug
+
+# Check each file name if it matches input search word and if it does, execute git command
+for f in $files
+do
+  match=`echo $f | grep -iE $search`
+
+  if [ -n "$match" ]
+  then
+    #echo "File found: match=$match search=$search"; # debug
+    git $command $match
+    echo "+ git $command $match"
+  #else
+    #echo "File not found: search=$search"; # debug
+  fi
+done
 
 git status
