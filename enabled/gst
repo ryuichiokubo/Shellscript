@@ -9,9 +9,7 @@ function help () {
 }
 
 # TODO:
-# - accept first three letters like uns: unstage
 # - automatically choose command based on context
-# - feedback to stdout wether "added", "not found", "discarded" etc
 
 # Parameter check
 if [ "$#" -lt 2 ]
@@ -21,7 +19,13 @@ then
   exit 1
 fi
 
-command=$1
+# $command can be specified by first two characters
+case "$1" in
+  ad* ) command="add" ;;
+  un* ) command="unstage" ;;
+  di* ) command="discard" ;;
+  * ) command=$1
+esac
 
 # $search is in the form of param2|param3 ...
 shift 1
