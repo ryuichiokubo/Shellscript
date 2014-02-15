@@ -11,13 +11,16 @@ function help () {
 # TODO:
 # - automatically choose command based on context
 
+readonly STATUS_SUCCESS=0
+readonly STATUS_ERROR=1
+
 # Parameter check
-if [ "$#" -lt 2 ]
-then
-  help
-  git status
-  exit 1
-fi
+#if [ "$#" -lt 2 ]
+#then
+#  help
+#  git status
+#  exit $STATUS_SUCCESS
+#fi
 
 # $command can be specified by first two characters
 case "$1" in
@@ -29,7 +32,12 @@ esac
 
 # $search is in the form of param2|param3 ...
 shift 1
-search=$@
+if [ $# -lt 1 ]
+then
+  search='*' # If omit file names, it takes all files
+else
+  search=$@
+fi
 search=`echo $search | tr ' ' '|'`
 #echo "search: $search" # debug
 
