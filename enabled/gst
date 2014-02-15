@@ -8,19 +8,15 @@ function help () {
   echo ""
 }
 
-# TODO:
-# - automatically choose command based on context
-
 readonly STATUS_SUCCESS=0
 readonly STATUS_ERROR=1
 
-# Parameter check
-#if [ "$#" -lt 2 ]
-#then
-#  help
-#  git status
-#  exit $STATUS_SUCCESS
-#fi
+# `gst help` or `gst --help` to show help 
+if [ "$1" == "help" ] || [ "$1" == "--help" ]
+then
+  help
+  exit $STATUS_SUCCESS
+fi
 
 # $command can be specified by first two characters
 case "$1" in
