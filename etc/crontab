@@ -1,0 +1,2 @@
+* * * * * ~/vimbackup/backup/auto_commit.sh
+0 15 * * * find ~/tmp -type f -atime +30 -exec rm {} \;
